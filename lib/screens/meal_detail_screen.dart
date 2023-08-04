@@ -3,9 +3,12 @@ import '../dummy_data.dart';
 
 class MealDetailScreen extends StatelessWidget {
   static const routeName = '/meal-detail';
+  final Function toggleFavourite;
+  final Function isMealFavourite;
 
-  const MealDetailScreen({super.key}); 
-  
+  // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
+  MealDetailScreen(this.toggleFavourite, this.isMealFavourite);
+
   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -31,12 +34,13 @@ class MealDetailScreen extends StatelessWidget {
       child: child, // display the child
     );
   }
- 
 
   @override
   Widget build(BuildContext context) {
-    final mealId =ModalRoute.of(context)!.settings.arguments as String; // get the meal id
-    final selectedMeal=DUMMY_MEALS.firstWhere((meal) => meal.id == mealId); // get the meal id
+    final mealId =
+        ModalRoute.of(context)!.settings.arguments as String; // get the meal id
+    final selectedMeal =
+        DUMMY_MEALS.firstWhere((meal) => meal.id == mealId); // get the meal id
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedMeal.title), // display the meal id
@@ -48,8 +52,7 @@ class MealDetailScreen extends StatelessWidget {
             Container(
               height: 300,
               width: double.infinity,
-              child: Image.network(
-                  selectedMeal.imageUrl,
+              child: Image.network(selectedMeal.imageUrl,
                   fit: BoxFit.cover), // display the image
             ),
             buildSectionTitle(context, 'Ingredients'), // display the text
@@ -58,12 +61,14 @@ class MealDetailScreen extends StatelessWidget {
                 itemBuilder: (ctx, index) => Card(
                   color: Theme.of(context).hintColor, // display the card
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10), // padding
-                    child: Text(' ${selectedMeal.ingredients[index]}'), // display the text
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 5, horizontal: 10), // padding
+                    child: Text(
+                        ' ${selectedMeal.ingredients[index]}'), // display the text
                   ),
                 ),
-                itemCount: selectedMeal.ingredients.length, // display the length
+                itemCount:
+                    selectedMeal.ingredients.length, // display the length
               ),
             ),
             buildSectionTitle(context, 'Steps'), // display the text
@@ -72,10 +77,12 @@ class MealDetailScreen extends StatelessWidget {
                 itemBuilder: (ctx, index) => Column(
                   children: [
                     ListTile(
-                      leading: CircleAvatar( // display the circle avatar
+                      leading: CircleAvatar(
+                        // display the circle avatar
                         child: Text('# ${(index + 1)}'), // display the text
                       ),
-                      title: Text(selectedMeal.steps[index]), // display the text
+                      title:
+                          Text(selectedMeal.steps[index]), // display the text
                     ),
                     const Divider(), // display the divider
                   ],
@@ -85,7 +92,13 @@ class MealDetailScreen extends StatelessWidget {
             ),
           ],
         ),
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          isMealFavourite(mealId) ? Icons.star : Icons.star_border,
+        ),
+        onPressed: () => toggleFavourite(mealId),
+      ),
     );
   }
 }
